@@ -11,6 +11,8 @@ import DatasetPanel from "@/components/DatasetPanel";
 
 const TABS = ["trace", "evalTypes", "eval", "abTesting", "tools"] as const;
 type Tab = (typeof TABS)[number];
+const TAB_ROW_1: readonly Tab[] = ["trace", "evalTypes", "eval"];
+const TAB_ROW_2: readonly Tab[] = ["abTesting", "tools"];
 
 const TAB_LABELS: Record<Tab, string> = {
   trace: "Trace",
@@ -68,27 +70,43 @@ export default function Home() {
         </p>
       </header>
 
-      <nav className="glass inline-flex w-fit gap-1 p-1">
-        {TABS.map((t) => (
-          <button
-            key={t}
-            type="button"
-            onClick={() => setTab(t)}
-            className={`rounded-2xl px-4 py-2 text-sm font-medium transition-colors ${
-              tab === t
-                ? "glass-inset text-black"
-                : "text-zinc-600 hover:text-black"
-            }`}
-          >
-            {TAB_LABELS[t]}
-          </button>
-        ))}
+      <nav className="glass flex w-full flex-col gap-1 p-1 sm:inline-flex sm:w-fit sm:flex-row sm:items-center">
+        <div className="flex w-full justify-between gap-1 sm:contents">
+          {TAB_ROW_1.map((t) => (
+            <button
+              key={t}
+              type="button"
+              onClick={() => setTab(t)}
+              className={`rounded-2xl px-3 py-2 text-center text-sm font-medium transition-colors sm:px-4 ${
+                tab === t
+                  ? "glass-inset text-black"
+                  : "text-zinc-600 hover:text-black"
+              }`}
+            >
+              {TAB_LABELS[t]}
+            </button>
+          ))}
+        </div>
+        <div className="flex w-full justify-center gap-1 sm:contents">
+          {TAB_ROW_2.map((t) => (
+            <button
+              key={t}
+              type="button"
+              onClick={() => setTab(t)}
+              className={`rounded-2xl px-3 py-2 text-center text-sm font-medium transition-colors sm:px-4 ${
+                tab === t
+                  ? "glass-inset text-black"
+                  : "text-zinc-600 hover:text-black"
+              }`}
+            >
+              {TAB_LABELS[t]}
+            </button>
+          ))}
+        </div>
       </nav>
 
       {tab === "trace" && (
         <div className="flex flex-col gap-4">
-          <DatasetPanel />
-
           <div className="glass flex flex-col gap-3 px-5 py-5">
             <textarea
               value={message}
@@ -106,6 +124,8 @@ export default function Home() {
               {loading ? "Running..." : "Run agent"}
             </button>
           </div>
+
+          <DatasetPanel />
 
           {lowCredit && (
             <div className="rounded-2xl border border-amber-300 bg-amber-50 px-4 py-3 text-sm text-amber-800">
