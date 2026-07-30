@@ -67,6 +67,58 @@ export const EVAL_CATEGORIES: { id: EvalCategory; label: string; description: st
   },
 ];
 
+// The outcome field the agent actually returns per item (see ProposedWork in
+// src/lib/types.ts). These four raw values are the wire contract the model is
+// instructed to use in src/lib/prompts.ts and src/lib/tools.ts — they stay as
+// they are so we don't have to touch the tool schema or re-validate prompt
+// scores just to relabel text. What's documented here (and shown via
+// outcomeLabel below) is a friendlier display label layered on top,
+// including splitting "unplanned" into two readable variants depending on
+// whether a goal was matched.
+export type Outcome = "completed" | "partial" | "missed" | "unplanned";
+
+export const OUTCOMES: { key: string; id: Outcome; label: string; description: string }[] = [
+  {
+    key: "completed",
+    id: "completed",
+    label: "Completed task",
+    description: "Matched an existing task (taskId set) that was completed as planned.",
+  },
+  {
+    key: "partial",
+    id: "partial",
+    label: "Partial task completed",
+    description: "Matched an existing task (taskId set), but only partial progress was made.",
+  },
+  {
+    key: "missed",
+    id: "missed",
+    label: "Missed task",
+    description: "Matched an existing task (taskId set), but it didn't happen.",
+  },
+  {
+    key: "unplanned-goal",
+    id: "unplanned",
+    label: "Unplanned (goal match)",
+    description: "No existing task matches (taskId null), but the work fits an existing goal (goalId set).",
+  },
+  {
+    key: "unplanned-no-goal",
+    id: "unplanned",
+    label: "Unplanned (no goal match)",
+    description: "No existing task or goal matches (taskId and goalId both null).",
+  },
+];
+
+// Same raw "unplanned" value covers two different situations — this is what
+// picks the right display label using the goalId that came back alongside it.
+export function outcomeLabel(outcome: Outcome, goalId: string | null): string {
+  if (outcome === "unplanned") {
+    return goalId ? "Unplanned (goal match)" : "Unplanned (no goal match)";
+  }
+  return OUTCOMES.find((o) => o.id === outcome)?.label ?? outcome;
+}
+
 export type FailureBucket =
   | "correct"
   | "wrong-tool"

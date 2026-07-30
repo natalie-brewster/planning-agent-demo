@@ -1,6 +1,7 @@
 "use client";
 
 import type { TraceStep } from "@/lib/agent";
+import { outcomeLabel } from "@/eval/taxonomy";
 
 const TONE_CLASSES: Record<string, string> = {
   user: "border-zinc-300 dark:border-zinc-700",
@@ -83,7 +84,8 @@ export default function TraceView({ trace }: { trace: TraceStep[] }) {
                         className="rounded border border-purple-200 bg-white p-2 text-xs font-mono dark:border-purple-900 dark:bg-black"
                       >
                         <div>
-                          <span className="text-zinc-500">outcome:</span> {item.outcome}
+                          <span className="text-zinc-500">outcome:</span> {outcomeLabel(item.outcome, item.goalId)}{" "}
+                          <span className="text-zinc-500">({item.outcome})</span>
                         </div>
                         <div>
                           <span className="text-zinc-500">taskId:</span> {item.taskId ?? "null"}

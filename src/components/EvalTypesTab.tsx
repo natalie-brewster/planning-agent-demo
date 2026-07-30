@@ -1,6 +1,6 @@
 "use client";
 
-import { EVAL_CATEGORIES, FAILURE_BUCKETS } from "@/eval/taxonomy";
+import { EVAL_CATEGORIES, FAILURE_BUCKETS, OUTCOMES } from "@/eval/taxonomy";
 
 export default function EvalTypesTab() {
   return (
@@ -20,6 +20,30 @@ export default function EvalTypesTab() {
                 <span className="font-mono text-xs text-zinc-500">{c.id}</span>
               </div>
               <p className="mt-1 text-sm text-zinc-600 dark:text-zinc-400">{c.description}</p>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      <section className="flex flex-col gap-3">
+        <div>
+          <h2 className="text-sm font-semibold">Output outcomes</h2>
+          <p className="text-xs text-zinc-500">
+            The <code className="font-mono">outcome</code> field the agent sets on every submitted item (see{" "}
+            <code className="font-mono">ProposedWork</code> in <code className="font-mono">src/lib/types.ts</code>).
+            The raw value shown in parentheses is what the model actually returns — the label is a friendlier
+            gloss on the same value, shown wherever a result appears. &quot;Unplanned&quot; is a single raw value
+            that covers two different situations, split below by whether a goal was matched.
+          </p>
+        </div>
+        <div className="flex flex-col gap-2">
+          {OUTCOMES.map((o) => (
+            <div key={o.key} className="rounded-lg border border-zinc-200 p-3 dark:border-zinc-800">
+              <div className="flex items-baseline gap-2">
+                <span className="text-sm font-semibold">{o.label}</span>
+                <span className="font-mono text-xs text-zinc-500">({o.id})</span>
+              </div>
+              <p className="mt-1 text-sm text-zinc-600 dark:text-zinc-400">{o.description}</p>
             </div>
           ))}
         </div>
