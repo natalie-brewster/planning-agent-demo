@@ -55,10 +55,7 @@ export default function EvalDashboard() {
     <div className="flex flex-col gap-4">
       <div className="flex flex-wrap items-center gap-2">
         {BUCKET_ORDER.filter((b) => counts[b]).map((bucket) => (
-          <div
-            key={bucket}
-            className="flex items-center gap-2 rounded-full border border-zinc-200 px-3 py-1 text-xs dark:border-zinc-800"
-          >
+          <div key={bucket} className="glass-inset flex items-center gap-2 rounded-full px-3 py-1 text-xs">
             <span className={`h-2 w-2 rounded-full ${BUCKET_DOT[bucket] ?? "bg-zinc-400"}`} />
             <span className="font-mono">{bucket}</span>
             <span className="font-semibold">
@@ -75,7 +72,7 @@ export default function EvalDashboard() {
         {results.map((r) => {
           const expanded = expandedId === r.caseId;
           return (
-            <div key={r.caseId} className="rounded-lg border border-zinc-200 dark:border-zinc-800">
+            <div key={r.caseId} className="glass">
               <button
                 type="button"
                 onClick={() => setExpandedId(expanded ? null : r.caseId)}
@@ -87,18 +84,18 @@ export default function EvalDashboard() {
                     <span className="font-mono text-sm font-medium">{r.caseId}</span>
                     <span className="text-xs text-zinc-500">{r.category}</span>
                     {r.knownLimitation && (
-                      <span className="rounded bg-zinc-100 px-1.5 py-0.5 text-[10px] text-zinc-500 dark:bg-zinc-900">
+                      <span className="rounded bg-zinc-100 px-1.5 py-0.5 text-[10px] text-zinc-500">
                         known limitation
                       </span>
                     )}
                   </div>
-                  <p className="text-xs text-zinc-600 dark:text-zinc-400">&ldquo;{r.message}&rdquo;</p>
+                  <p className="text-xs text-zinc-600">&ldquo;{r.message}&rdquo;</p>
                 </div>
                 <span className="shrink-0 font-mono text-xs text-zinc-500">{r.bucket}</span>
               </button>
               {expanded && (
-                <div className="flex flex-col gap-3 border-t border-zinc-200 p-3 dark:border-zinc-800">
-                  <p className="text-xs text-zinc-600 dark:text-zinc-400">
+                <div className="flex flex-col gap-3 border-t border-[var(--glass-border)] p-3">
+                  <p className="text-xs text-zinc-600">
                     <span className="font-semibold">Grader reasoning:</span> {r.reasoning}
                   </p>
                   <div className="flex gap-4 font-mono text-xs text-zinc-500">

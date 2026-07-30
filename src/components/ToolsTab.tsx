@@ -10,10 +10,10 @@ export default function ToolsTab() {
         order, and how many times.
       </p>
       {TOOL_DEFINITIONS.map((tool) => (
-        <div key={tool.name} className="rounded-lg border border-zinc-200 p-3 dark:border-zinc-800">
+        <div key={tool.name} className="glass p-3">
           <div className="font-mono text-sm font-semibold">{tool.name}</div>
-          <p className="mt-1 text-sm text-zinc-600 dark:text-zinc-400">{tool.description}</p>
-          <pre className="mt-2 overflow-x-auto rounded bg-zinc-50 p-2 text-xs font-mono text-zinc-600 dark:bg-zinc-900 dark:text-zinc-400">
+          <p className="mt-1 text-sm text-zinc-600">{tool.description}</p>
+          <pre className="glass-inset mt-2 overflow-x-auto p-2 text-xs font-mono text-zinc-600">
             {JSON.stringify(tool.input_schema, null, 2)}
           </pre>
         </div>

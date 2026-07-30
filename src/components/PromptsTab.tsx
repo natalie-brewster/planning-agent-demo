@@ -46,26 +46,24 @@ export default function PromptsTab() {
         return (
           <div
             key={v.id}
-            className={`rounded-lg border p-3 ${
-              v.active ? "border-black dark:border-white" : "border-zinc-200 dark:border-zinc-800"
-            }`}
+            className={`glass p-3 ${v.active ? "border-black/40" : ""}`}
           >
             <div className="flex items-start justify-between gap-3">
               <div>
                 <div className="flex flex-wrap items-center gap-2">
                   <span className="font-mono text-sm font-semibold">{v.label}</span>
                   {v.active && (
-                    <span className="rounded bg-black px-1.5 py-0.5 text-[10px] text-white dark:bg-white dark:text-black">
+                    <span className="rounded bg-black px-1.5 py-0.5 text-[10px] text-white">
                       active
                     </span>
                   )}
                   {isBest && (
-                    <span className="rounded bg-emerald-100 px-1.5 py-0.5 text-[10px] text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300">
+                    <span className="rounded bg-emerald-100 px-1.5 py-0.5 text-[10px] text-emerald-800">
                       best score
                     </span>
                   )}
                 </div>
-                <p className="mt-1 text-sm text-zinc-600 dark:text-zinc-400">{v.changeNotes}</p>
+                <p className="mt-1 text-sm text-zinc-600">{v.changeNotes}</p>
               </div>
               <div className="shrink-0 text-right">
                 {v.score ? (
@@ -84,7 +82,7 @@ export default function PromptsTab() {
             {v.score && (
               <div className="mt-2 flex flex-wrap gap-2">
                 {Object.entries(v.score.counts).map(([bucket, count]) => (
-                  <span key={bucket} className="rounded bg-zinc-100 px-2 py-0.5 font-mono text-[10px] dark:bg-zinc-900">
+                  <span key={bucket} className="rounded bg-zinc-100 px-2 py-0.5 font-mono text-[10px]">
                     {bucket}: {count}
                   </span>
                 ))}
@@ -99,7 +97,7 @@ export default function PromptsTab() {
               {expanded ? "Hide" : "Show"} full prompt
             </button>
             {expanded && (
-              <pre className="mt-2 overflow-x-auto whitespace-pre-wrap rounded bg-zinc-50 p-2 text-xs font-mono text-zinc-600 dark:bg-zinc-900 dark:text-zinc-400">
+              <pre className="mt-2 overflow-x-auto whitespace-pre-wrap rounded bg-zinc-50 p-2 text-xs font-mono text-zinc-600">
                 {v.prompt}
               </pre>
             )}
