@@ -110,11 +110,14 @@
     "versionId": "v4",
     "label": "v4 — Retry with every word, not a guessed keyword",
     "toolsChanged": false,
-    "correct": 20,
-    "total": 21,
+    "correct": 26,
+    "total": 36,
     "counts": {
-      "correct": 20,
-      "hallucinated-data": 1
+      "correct": 26,
+      "right-tool-wrong-args": 3,
+      "hallucinated-data": 2,
+      "incomplete": 4,
+      "no-tool-called": 1
     },
     "caseIds": [
       "run-contributes-to-goal",
@@ -137,9 +140,24 @@
       "no-date-defaults-today",
       "signed-up-monday",
       "signed-up-tuesday",
-      "recurring-run-not-duplicate"
+      "recurring-run-not-duplicate",
+      "genre-word-fuzzy-match",
+      "vocabulary-swap-deploy",
+      "triple-repeated-duolingo",
+      "multi-activity-with-gibberish",
+      "shoes-not-a-run",
+      "negated-activity",
+      "same-task-contradictory-outcomes",
+      "future-intent-not-a-report",
+      "compound-comparison-not-duplicate",
+      "injection-via-quoted-task-title",
+      "keyword-bait-gibberish",
+      "same-activity-described-twice",
+      "pace-mismatch-run",
+      "excited-future-deploy",
+      "full-day-narrative-multi-activity"
     ],
-    "timestamp": "2026-07-30T03:59:12.242Z"
+    "timestamp": "2026-07-30T05:00:11.046Z"
   },
   {
     "versionId": "v5",
