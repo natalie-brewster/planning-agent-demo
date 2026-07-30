@@ -6,17 +6,17 @@ import TraceView from "@/components/TraceView";
 import EvalTypesTab from "@/components/EvalTypesTab";
 import EvalDashboard from "@/components/EvalDashboard";
 import ToolsTab from "@/components/ToolsTab";
-import PromptsTab from "@/components/PromptsTab";
+import ABTestingTab from "@/components/ABTestingTab";
 import DatasetPanel from "@/components/DatasetPanel";
 
-const TABS = ["trace", "evalTypes", "eval", "prompts", "tools"] as const;
+const TABS = ["trace", "evalTypes", "eval", "abTesting", "tools"] as const;
 type Tab = (typeof TABS)[number];
 
 const TAB_LABELS: Record<Tab, string> = {
   trace: "Trace",
   evalTypes: "Eval Taxonomy",
   eval: "Eval Dashboard",
-  prompts: "Prompts",
+  abTesting: "AB Testing",
   tools: "Tools",
 };
 
@@ -122,7 +122,7 @@ export default function Home() {
 
       {tab === "evalTypes" && <EvalTypesTab />}
       {tab === "eval" && <EvalDashboard />}
-      {tab === "prompts" && <PromptsTab />}
+      {tab === "abTesting" && <ABTestingTab />}
       {tab === "tools" && <ToolsTab />}
     </div>
   );

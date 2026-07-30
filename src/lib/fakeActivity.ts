@@ -20,6 +20,7 @@ export const tasks: Task[] = [
   { id: "t-run3", goalId: "g-fitness", title: "Buy new running shoes", notes: "Old pair has 400+ miles", status: "Not Started", plannedFor: null, recurrence: "Does not repeat" },
   { id: "t-span1", goalId: "g-spanish", title: "Duolingo daily lesson", notes: null, status: "In Progress", plannedFor: "2026-07-29", recurrence: "Daily" },
   { id: "t-span2", goalId: "g-spanish", title: "Book a conversation exchange session", notes: null, status: "Not Started", plannedFor: null, recurrence: "Does not repeat" },
+  { id: "t-span3", goalId: "g-spanish", title: "Read a children's book in Spanish", notes: "Graded reader, helps with vocab", status: "Not Started", plannedFor: null, recurrence: "Does not repeat" },
   { id: "t-port1", goalId: "g-portfolio", title: "Write case study for last project", notes: "Focus on the migration work", status: "In Progress", plannedFor: "2026-07-29", recurrence: "Does not repeat" },
   { id: "t-port2", goalId: "g-portfolio", title: "Deploy site to Vercel", notes: null, status: "Not Started", plannedFor: null, recurrence: "Does not repeat" },
   { id: "t-read1", goalId: "g-reading", title: "Finish current book", notes: "About 60 pages left", status: "In Progress", plannedFor: null, recurrence: "Does not repeat" },

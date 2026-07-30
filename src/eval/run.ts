@@ -4,14 +4,17 @@ import { resolve } from "node:path";
 import { evalCases, type EvalCase } from "./cases";
 import { FAILURE_BUCKETS, type FailureBucket } from "./taxonomy";
 import { runReconciliationAgent, type AgentRunResult, type TraceStep } from "../lib/agent";
-import { activePromptVersion } from "../lib/prompts";
+import { activeVersion, getVersion } from "../lib/versions";
 
-export type PromptScoreEntry = {
-  promptId: string;
+export type VersionScoreEntry = {
+  versionId: string;
   label: string;
+  toolsChanged: boolean;
   correct: number;
   total: number;
   counts: Record<string, number>;
+  /** case ids this score actually covers — lets the UI flag stale/partial coverage when new cases are added later. */
+  caseIds: string[];
   timestamp: string;
 };
 
@@ -102,13 +105,27 @@ async function main() {
   const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
   const model = process.env.ANTHROPIC_MODEL || "claude-sonnet-5";
 
-  const filterIds = process.argv.slice(2);
+  // Usage: npm run eval [-- --version <id>] [caseId ...]
+  const rawArgs = process.argv.slice(2);
+  let versionId: string | undefined;
+  const filterIds: string[] = [];
+  for (let i = 0; i < rawArgs.length; i++) {
+    if (rawArgs[i] === "--version") {
+      versionId = rawArgs[++i];
+    } else {
+      filterIds.push(rawArgs[i]);
+    }
+  }
+  const version = versionId ? getVersion(versionId) : activeVersion;
+
   const casesToRun = filterIds.length > 0 ? evalCases.filter((c) => filterIds.includes(c.id)) : evalCases;
 
   if (casesToRun.length === 0) {
     console.error(`No cases matched: ${filterIds.join(", ")}`);
     process.exit(1);
   }
+
+  console.log(`Running against version "${version.label}" (${version.id})\n`);
 
   const results: GradedResult[] = [];
 
@@ -117,7 +134,7 @@ async function main() {
     process.stdout.write(`${evalCase.id.padEnd(32)} `);
 
     try {
-      const result = await runReconciliationAgent(evalCase.message);
+      const result = await runReconciliationAgent(evalCase.message, version.id);
       const grade = await gradeCase(client, model, evalCase, result);
 
       results.push({
@@ -181,33 +198,35 @@ async function main() {
   writeFileSync(outPath, JSON.stringify(results, null, 2));
   console.log(`\nWrote ${results.length} result(s) to src/eval/results.json`);
 
-  // Only the full suite produces a score that's fair to compare across prompt
+  // Only the full suite produces a score that's fair to compare across
   // versions — a filtered run (npm run eval -- some-case-id) would record a
-  // misleading "1/1" against the current prompt, so skip it in that case.
+  // misleading "1/1" against this version, so skip it in that case.
   if (filterIds.length === 0) {
-    const scoresPath = resolve(process.cwd(), "src/eval/prompt-scores.json");
-    let scores: PromptScoreEntry[] = [];
+    const scoresPath = resolve(process.cwd(), "src/eval/version-scores.json");
+    let scores: VersionScoreEntry[] = [];
     try {
       scores = JSON.parse(readFileSync(scoresPath, "utf-8"));
     } catch {
       scores = [];
     }
 
-    const entry: PromptScoreEntry = {
-      promptId: activePromptVersion.id,
-      label: activePromptVersion.label,
+    const entry: VersionScoreEntry = {
+      versionId: version.id,
+      label: version.label,
+      toolsChanged: version.toolsChanged,
       correct: counts["correct"] ?? 0,
       total: results.length,
       counts,
+      caseIds: casesToRun.map((c) => c.id),
       timestamp: new Date().toISOString(),
     };
 
-    const existingIndex = scores.findIndex((s) => s.promptId === entry.promptId);
+    const existingIndex = scores.findIndex((s) => s.versionId === entry.versionId);
     if (existingIndex >= 0) scores[existingIndex] = entry;
     else scores.push(entry);
 
     writeFileSync(scoresPath, JSON.stringify(scores, null, 2));
-    console.log(`Recorded score for "${activePromptVersion.label}": ${entry.correct}/${entry.total} correct`);
+    console.log(`Recorded score for "${version.label}": ${entry.correct}/${entry.total} correct`);
   }
 }
 

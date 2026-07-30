@@ -1,9 +1,7 @@
 import Anthropic from "@anthropic-ai/sdk";
-import { executeTool, TOOL_DEFINITIONS } from "./tools";
-import { activePromptVersion } from "./prompts";
+import { executeTool } from "./tools";
+import { activeVersion, getVersion } from "./versions";
 import type { ProposedWork } from "./types";
-
-const SYSTEM_PROMPT = activePromptVersion.prompt;
 
 export type TraceStep =
   | { type: "user_message"; content: string; at: number }
@@ -25,11 +23,15 @@ export type AgentRunResult = {
 
 const MAX_TURNS = 6;
 
-export async function runReconciliationAgent(userMessage: string): Promise<AgentRunResult> {
+export async function runReconciliationAgent(
+  userMessage: string,
+  versionId?: string
+): Promise<AgentRunResult> {
+  const version = versionId ? getVersion(versionId) : activeVersion;
   const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
   const model = process.env.ANTHROPIC_MODEL || "claude-sonnet-5";
   const started = Date.now();
-  console.log("[agent] Starting runReconciliationAgent", { model, started, userMessage });
+  console.log("[agent] Starting runReconciliationAgent", { model, started, userMessage, versionId: version.id });
 
   const trace: TraceStep[] = [{ type: "user_message", content: userMessage, at: Date.now() - started }];
   const messages: Anthropic.MessageParam[] = [{ role: "user", content: userMessage }];
@@ -47,8 +49,8 @@ export async function runReconciliationAgent(userMessage: string): Promise<Agent
     const response = await client.messages.create({
       model,
       max_tokens: 2048,
-      system: SYSTEM_PROMPT,
-      tools: TOOL_DEFINITIONS,
+      system: version.prompt,
+      tools: version.tools,
       messages,
     });
 

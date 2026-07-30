@@ -69,7 +69,7 @@ export const EVAL_CATEGORIES: { id: EvalCategory; label: string; description: st
 
 // The outcome field the agent actually returns per item (see ProposedWork in
 // src/lib/types.ts). These four raw values are the wire contract the model is
-// instructed to use in src/lib/prompts.ts and src/lib/tools.ts — they stay as
+// instructed to use in src/lib/versions.ts and src/lib/tools.ts — they stay as
 // they are so we don't have to touch the tool schema or re-validate prompt
 // scores just to relabel text. What's documented here (and shown via
 // outcomeLabel below) is a friendlier display label layered on top,
