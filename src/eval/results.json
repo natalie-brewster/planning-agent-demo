@@ -1,0 +1,212 @@
+[
+  {
+    "caseId": "recurring-run-not-duplicate",
+    "message": "Just got back from my 5k, took 22 minutes.",
+    "category": "report-clean-match",
+    "knownLimitation": false,
+    "bucket": "correct",
+    "reasoning": "The agent correctly matched t-run1, set effectiveDate to today (2026-07-29), duration 22 min, outcome completed, and explicitly explained that this is a new instance distinct from the prior 2026-07-27 log, avoiding the incomplete-duplicate-suppression trap.",
+    "toolCallCount": 6,
+    "turnCount": 3,
+    "elapsedMs": 10029,
+    "items": [
+      {
+        "sourceText": "Just got back from my 5k, took 22 minutes.",
+        "outcome": "completed",
+        "effectiveDate": "2026-07-29",
+        "durationMinutes": 22,
+        "taskId": "t-run1",
+        "goalId": "g-fitness",
+        "confidence": "high",
+        "explanation": "Matches the recurring 'Run 5k at easy pace' task under the fitness goal; this is a new instance today distinct from the one already logged on 2026-07-27."
+      }
+    ],
+    "trace": [
+      {
+        "type": "user_message",
+        "content": "Just got back from my 5k, took 22 minutes.",
+        "at": 1
+      },
+      {
+        "type": "tool_call",
+        "id": "toolu_015AkYzyP1zLqb3QRVQVeeHi",
+        "name": "search_tasks",
+        "input": {
+          "query": "5k run"
+        },
+        "at": 2299
+      },
+      {
+        "type": "tool_result",
+        "id": "toolu_015AkYzyP1zLqb3QRVQVeeHi",
+        "name": "search_tasks",
+        "output": {
+          "query": "5k run",
+          "resultCount": 0,
+          "results": []
+        },
+        "at": 2299
+      },
+      {
+        "type": "tool_call",
+        "id": "toolu_01AthNyoaPWeowyN9DEZUxgj",
+        "name": "search_goals",
+        "input": {
+          "query": "running"
+        },
+        "at": 2299
+      },
+      {
+        "type": "tool_result",
+        "id": "toolu_01AthNyoaPWeowyN9DEZUxgj",
+        "name": "search_goals",
+        "output": {
+          "query": "running",
+          "resultCount": 0,
+          "results": []
+        },
+        "at": 2299
+      },
+      {
+        "type": "tool_call",
+        "id": "toolu_01XuY6jTFkkMbrr7qfpZno9y",
+        "name": "get_recent_events",
+        "input": {
+          "days": 3
+        },
+        "at": 2300
+      },
+      {
+        "type": "tool_result",
+        "id": "toolu_01XuY6jTFkkMbrr7qfpZno9y",
+        "name": "get_recent_events",
+        "output": {
+          "today": "2026-07-29",
+          "days": 3,
+          "resultCount": 3,
+          "results": [
+            {
+              "id": "e1",
+              "date": "2026-07-27",
+              "kind": "Completed from list",
+              "title": "Run 5k at easy pace",
+              "durationMinutes": 32,
+              "taskId": "t-run1",
+              "goalId": "g-fitness"
+            },
+            {
+              "id": "e2",
+              "date": "2026-07-28",
+              "kind": "Also accomplished",
+              "title": "Meal prepped for the week",
+              "durationMinutes": 45,
+              "taskId": null,
+              "goalId": "g-misc"
+            },
+            {
+              "id": "e3",
+              "date": "2026-07-28",
+              "kind": "Partial progress",
+              "title": "Duolingo daily lesson",
+              "durationMinutes": 10,
+              "taskId": "t-span1",
+              "goalId": "g-spanish"
+            }
+          ]
+        },
+        "at": 2300
+      },
+      {
+        "type": "tool_call",
+        "id": "toolu_01SYYF9tyKHGP4oyPMZJgQMS",
+        "name": "search_tasks",
+        "input": {
+          "query": "run"
+        },
+        "at": 5211
+      },
+      {
+        "type": "tool_result",
+        "id": "toolu_01SYYF9tyKHGP4oyPMZJgQMS",
+        "name": "search_tasks",
+        "output": {
+          "query": "run",
+          "resultCount": 2,
+          "results": [
+            {
+              "id": "t-run1",
+              "title": "Run 5k at easy pace",
+              "status": "Not Started",
+              "goalId": "g-fitness",
+              "plannedFor": "2026-07-28"
+            },
+            {
+              "id": "t-run3",
+              "title": "Buy new running shoes",
+              "status": "Not Started",
+              "goalId": "g-fitness",
+              "plannedFor": null
+            }
+          ]
+        },
+        "at": 5211
+      },
+      {
+        "type": "tool_call",
+        "id": "toolu_01JWQGFtGUyXWktXMnS3qYQH",
+        "name": "search_goals",
+        "input": {
+          "query": "fitness"
+        },
+        "at": 5211
+      },
+      {
+        "type": "tool_result",
+        "id": "toolu_01JWQGFtGUyXWktXMnS3qYQH",
+        "name": "search_goals",
+        "output": {
+          "query": "fitness",
+          "resultCount": 0,
+          "results": []
+        },
+        "at": 5211
+      },
+      {
+        "type": "tool_call",
+        "id": "toolu_017ebC84ghErevVBQ5MUnAoe",
+        "name": "submit_reconciliation",
+        "input": {
+          "items": [
+            {
+              "sourceText": "Just got back from my 5k, took 22 minutes.",
+              "outcome": "completed",
+              "effectiveDate": "2026-07-29",
+              "durationMinutes": 22,
+              "taskId": "t-run1",
+              "goalId": "g-fitness",
+              "confidence": "high",
+              "explanation": "Matches the recurring 'Run 5k at easy pace' task under the fitness goal; this is a new instance today distinct from the one already logged on 2026-07-27."
+            }
+          ]
+        },
+        "at": 10028
+      },
+      {
+        "type": "final_result",
+        "items": [
+          {
+            "sourceText": "Just got back from my 5k, took 22 minutes.",
+            "outcome": "completed",
+            "effectiveDate": "2026-07-29",
+            "durationMinutes": 22,
+            "taskId": "t-run1",
+            "goalId": "g-fitness",
+            "confidence": "high",
+            "explanation": "Matches the recurring 'Run 5k at easy pace' task under the fitness goal; this is a new instance today distinct from the one already logged on 2026-07-27."
+          }
+        ],
+        "at": 10029
+      }
+    ]
+  }
+]
