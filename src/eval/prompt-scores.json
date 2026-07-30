@@ -1,0 +1,27 @@
+[
+  {
+    "promptId": "v1",
+    "label": "v1 — Original",
+    "correct": 17,
+    "total": 21,
+    "counts": {
+      "correct": 17,
+      "incomplete": 1,
+      "hallucinated-data": 2,
+      "wrong-tool": 1
+    },
+    "timestamp": "2026-07-30T01:20:56.321Z"
+  },
+  {
+    "promptId": "v2",
+    "label": "v2 — Creation-request guard",
+    "correct": 19,
+    "total": 21,
+    "counts": {
+      "correct": 19,
+      "incomplete": 1,
+      "right-tool-wrong-args": 1
+    },
+    "timestamp": "2026-07-30T01:27:26.532Z"
+  }
+]

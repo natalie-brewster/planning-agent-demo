@@ -1,8 +1,18 @@
 import Anthropic from "@anthropic-ai/sdk";
-import { writeFileSync } from "node:fs";
+import { readFileSync, writeFileSync } from "node:fs";
 import { resolve } from "node:path";
 import { evalCases, type EvalCase } from "./cases";
 import { runReconciliationAgent, type AgentRunResult, type TraceStep } from "../lib/agent";
+import { activePromptVersion } from "../lib/prompts";
+
+export type PromptScoreEntry = {
+  promptId: string;
+  label: string;
+  correct: number;
+  total: number;
+  counts: Record<string, number>;
+  timestamp: string;
+};
 
 // The six buckets from the failure taxonomy. "correct" isn't a failure, it's
 // the sixth possible verdict — every case lands in exactly one of these.
@@ -191,6 +201,35 @@ async function main() {
   const outPath = resolve(process.cwd(), "src/eval/results.json");
   writeFileSync(outPath, JSON.stringify(results, null, 2));
   console.log(`\nWrote ${results.length} result(s) to src/eval/results.json`);
+
+  // Only the full suite produces a score that's fair to compare across prompt
+  // versions — a filtered run (npm run eval -- some-case-id) would record a
+  // misleading "1/1" against the current prompt, so skip it in that case.
+  if (filterIds.length === 0) {
+    const scoresPath = resolve(process.cwd(), "src/eval/prompt-scores.json");
+    let scores: PromptScoreEntry[] = [];
+    try {
+      scores = JSON.parse(readFileSync(scoresPath, "utf-8"));
+    } catch {
+      scores = [];
+    }
+
+    const entry: PromptScoreEntry = {
+      promptId: activePromptVersion.id,
+      label: activePromptVersion.label,
+      correct: counts["correct"] ?? 0,
+      total: results.length,
+      counts,
+      timestamp: new Date().toISOString(),
+    };
+
+    const existingIndex = scores.findIndex((s) => s.promptId === entry.promptId);
+    if (existingIndex >= 0) scores[existingIndex] = entry;
+    else scores.push(entry);
+
+    writeFileSync(scoresPath, JSON.stringify(scores, null, 2));
+    console.log(`Recorded score for "${activePromptVersion.label}": ${entry.correct}/${entry.total} correct`);
+  }
 }
 
 main().catch((error) => {

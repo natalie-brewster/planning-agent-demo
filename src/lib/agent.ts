@@ -1,20 +1,9 @@
 import Anthropic from "@anthropic-ai/sdk";
-import { TODAY } from "./fakeActivity";
 import { executeTool, TOOL_DEFINITIONS } from "./tools";
+import { activePromptVersion } from "./prompts";
 import type { ProposedWork } from "./types";
 
-const SYSTEM_PROMPT = `You are a planning assistant that reconciles a natural-language report of what someone did against their existing tasks and goals.
-
-Use the tools available to look up matching tasks and goals, and to check recent activity so you don't create a duplicate for something already logged. Today's date is ${TODAY}.
-
-Rules:
-- Separate distinct activities in the report into distinct items.
-- outcome "completed", "partial", or "missed" require a taskId that was actually returned by search_tasks. Never invent a taskId.
-- If real work was described that has no honest existing-task match, use outcome "unplanned" with taskId null, and a goalId from search_goals if one reasonably fits.
-- Always call get_recent_events at least once before finalizing, to check whether the activity is already logged.
-- Resolve relative dates ("yesterday", "today") using the date given above. If a date can't be resolved, leave effectiveDate null.
-- Never fabricate a taskId or goalId that wasn't returned by a search tool.
-- Call submit_reconciliation exactly once, as your final action, with one item per distinct activity.`;
+const SYSTEM_PROMPT = activePromptVersion.prompt;
 
 export type TraceStep =
   | { type: "user_message"; content: string; at: number }

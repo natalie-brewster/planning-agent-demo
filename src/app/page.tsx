@@ -4,9 +4,18 @@ import { useState } from "react";
 import type { AgentRunResult } from "@/lib/agent";
 import TraceView from "@/components/TraceView";
 import EvalDashboard from "@/components/EvalDashboard";
+import ToolsTab from "@/components/ToolsTab";
+import PromptsTab from "@/components/PromptsTab";
 
-const TABS = ["trace", "eval"] as const;
+const TABS = ["trace", "eval", "prompts", "tools"] as const;
 type Tab = (typeof TABS)[number];
+
+const TAB_LABELS: Record<Tab, string> = {
+  trace: "Trace",
+  eval: "Eval Dashboard",
+  prompts: "Prompts",
+  tools: "Tools",
+};
 
 export default function Home() {
   const [tab, setTab] = useState<Tab>("trace");
@@ -39,6 +48,7 @@ export default function Home() {
     <div className="mx-auto flex w-full max-w-3xl flex-1 flex-col gap-6 px-6 py-10">
       <header className="flex flex-col gap-1">
         <h1 className="text-xl font-semibold">Planning Agent Demo</h1>
+        <p className="text-md">A Natalie Brewster Project</p>
         <p className="text-sm text-zinc-500">
           Reconciles a natural-language activity report against existing tasks and goals.
         </p>
@@ -56,7 +66,7 @@ export default function Home() {
                 : "text-zinc-500 hover:text-zinc-800 dark:hover:text-zinc-300"
             }`}
           >
-            {t === "trace" ? "Trace" : "Eval Dashboard"}
+            {TAB_LABELS[t]}
           </button>
         ))}
       </nav>
@@ -100,6 +110,8 @@ export default function Home() {
       )}
 
       {tab === "eval" && <EvalDashboard />}
+      {tab === "prompts" && <PromptsTab />}
+      {tab === "tools" && <ToolsTab />}
     </div>
   );
 }
