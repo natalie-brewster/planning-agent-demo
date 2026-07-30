@@ -51,6 +51,12 @@ export default function EvalDashboard() {
   for (const r of results) counts[r.bucket] = (counts[r.bucket] ?? 0) + 1;
   const realFailures = results.filter((r) => r.bucket !== "correct" && !r.knownLimitation).length;
 
+  const sortedResults = [...results].sort((a, b) => {
+    const aFailing = a.bucket !== "correct" ? 0 : 1;
+    const bFailing = b.bucket !== "correct" ? 0 : 1;
+    return aFailing - bFailing;
+  });
+
   return (
     <div className="flex flex-col gap-4">
       <div className="flex flex-wrap items-center gap-2">
@@ -69,7 +75,7 @@ export default function EvalDashboard() {
       </div>
 
       <div className="flex flex-col gap-2">
-        {results.map((r) => {
+        {sortedResults.map((r) => {
           const expanded = expandedId === r.caseId;
           return (
             <div key={r.caseId} className="glass">

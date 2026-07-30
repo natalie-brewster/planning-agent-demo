@@ -23,5 +23,26 @@
       "right-tool-wrong-args": 1
     },
     "timestamp": "2026-07-30T01:27:26.532Z"
+  },
+  {
+    "promptId": "v3",
+    "label": "v3 — Miscellaneous fallback + search retry",
+    "correct": 21,
+    "total": 21,
+    "counts": {
+      "correct": 21
+    },
+    "timestamp": "2026-07-30T03:53:16.685Z"
+  },
+  {
+    "promptId": "v4",
+    "label": "v4 — Retry with every word, not a guessed keyword",
+    "correct": 20,
+    "total": 21,
+    "counts": {
+      "correct": 20,
+      "hallucinated-data": 1
+    },
+    "timestamp": "2026-07-30T03:59:12.242Z"
   }
 ]
