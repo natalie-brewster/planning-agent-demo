@@ -26,10 +26,12 @@ export default function Home() {
   const [result, setResult] = useState<AgentRunResult | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [lowCredit, setLowCredit] = useState(false);
 
   async function runAgent() {
     setLoading(true);
     setError(null);
+    setLowCredit(false);
     setResult(null);
     try {
       const res = await fetch("/api/agent", {
@@ -38,7 +40,10 @@ export default function Home() {
         body: JSON.stringify({ message }),
       });
       const data = await res.json();
-      if (!res.ok) throw new Error(data.error ?? "Agent run failed.");
+      if (!res.ok) {
+        if (data.lowCredit) setLowCredit(true);
+        throw new Error(data.error ?? "Agent run failed.");
+      }
       setResult(data as AgentRunResult);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Agent run failed.");
@@ -49,7 +54,7 @@ export default function Home() {
 
   return (
     <div className="mx-auto flex w-full max-w-3xl flex-1 flex-col gap-6 px-6 py-10">
-      <header className="glass flex flex-col gap-1 px-6 py-5">
+      <header className="flex flex-col gap-1 px-6 py-5">
         <h1 className="font-display text-3xl font-bold">Planning Agent Demo</h1>
         <p className="text-md">A Natalie Brewster Project</p>
         <p className="text-sm italic text-zinc-600">
@@ -101,6 +106,13 @@ export default function Home() {
               {loading ? "Running..." : "Run agent"}
             </button>
           </div>
+
+          {lowCredit && (
+            <div className="rounded-2xl border border-amber-300 bg-amber-50 px-4 py-3 text-sm text-amber-800">
+              ⚠️ Low or insufficient Anthropic API credits. Add credits to your Anthropic account
+              to keep running the agent.
+            </div>
+          )}
 
           {error && <p className="text-sm text-red-600">{error}</p>}
 

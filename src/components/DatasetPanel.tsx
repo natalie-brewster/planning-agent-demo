@@ -7,7 +7,7 @@ export default function DatasetPanel() {
   const [open, setOpen] = useState(true);
 
   return (
-    <div className="glass">
+    <div>
       <button
         type="button"
         onClick={() => setOpen((v) => !v)}
