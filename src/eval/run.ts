@@ -14,7 +14,7 @@ type Bucket =
   | "hallucinated-data"
   | "incomplete";
 
-type GradedResult = {
+export type GradedResult = {
   caseId: string;
   message: string;
   category: EvalCase["category"];
