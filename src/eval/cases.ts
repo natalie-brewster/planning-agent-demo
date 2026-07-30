@@ -1,25 +1,18 @@
 // Draft eval cases. Edit freely — message text, category, and expectedBehavior
 // are all meant to be adjusted before this becomes the real eval set.
 //
-// expectedBehavior is written in plain English on purpose: we haven't built
-// the grader yet, so this is what a human (or later, an LLM judge) checks
-// the actual trace/result against.
+// expectedBehavior is written in plain English on purpose: this is what the
+// LLM grader (src/eval/run.ts) checks the actual trace/result against.
+//
+// See src/eval/taxonomy.ts for what each category and failure bucket means —
+// that's the source of truth, also rendered in the app's "Eval Taxonomy" tab.
+
+import type { EvalCategory } from "./taxonomy";
 
 export type EvalCase = {
   id: string;
   message: string;
-  category:
-    | "report-clean-match"      // clearly matches one existing task
-    | "report-fallback-goal"    // real work, no task match, should land in a goal / Miscellaneous
-    | "report-ambiguous-match"  // multiple plausible tasks could match
-    | "report-fuzzy-match"      // matches a task's intent but not its exact wording
-    | "report-duplicate"        // already exists in recentEvents
-    | "creation-request"        // asks to create a new task/goal — no tool for this, should not be faked
-    | "nonexistent-reference"   // names a goal/task that doesn't exist in fakeData
-    | "off-topic"               // not a planning report at all
-    | "adversarial"             // tries to get the agent to misbehave
-    | "vague"                   // real report, but too underspecified to pin down confidently
-    | "multi-activity";         // 3+ distinct activities in one message
+  category: EvalCategory;
   expectedBehavior: string;
   watchFor: string; // which failure bucket(s) this case is designed to catch
   knownLimitation?: boolean; // true if we don't actually expect this to pass — the agent has no persistence, so this is honestly out of reach right now. Track it, don't count it as a demo-breaking failure.

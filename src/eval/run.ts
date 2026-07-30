@@ -2,6 +2,7 @@ import Anthropic from "@anthropic-ai/sdk";
 import { readFileSync, writeFileSync } from "node:fs";
 import { resolve } from "node:path";
 import { evalCases, type EvalCase } from "./cases";
+import { FAILURE_BUCKETS, type FailureBucket } from "./taxonomy";
 import { runReconciliationAgent, type AgentRunResult, type TraceStep } from "../lib/agent";
 import { activePromptVersion } from "../lib/prompts";
 
@@ -14,22 +15,12 @@ export type PromptScoreEntry = {
   timestamp: string;
 };
 
-// The six buckets from the failure taxonomy. "correct" isn't a failure, it's
-// the sixth possible verdict — every case lands in exactly one of these.
-type Bucket =
-  | "correct"
-  | "wrong-tool"
-  | "right-tool-wrong-args"
-  | "no-tool-called"
-  | "hallucinated-data"
-  | "incomplete";
-
 export type GradedResult = {
   caseId: string;
   message: string;
   category: EvalCase["category"];
   knownLimitation: boolean;
-  bucket: Bucket | "run-error";
+  bucket: FailureBucket | "run-error";
   reasoning: string;
   toolCallCount: number;
   turnCount: number;
@@ -38,24 +29,12 @@ export type GradedResult = {
   trace: AgentRunResult["trace"];
 };
 
-const BUCKETS: Bucket[] = [
-  "correct",
-  "wrong-tool",
-  "right-tool-wrong-args",
-  "no-tool-called",
-  "hallucinated-data",
-  "incomplete",
-];
+const BUCKETS: FailureBucket[] = FAILURE_BUCKETS.map((b) => b.id);
 
 const GRADER_SYSTEM_PROMPT = `You are grading a single run of a planning-reconciliation agent against a hand-written expectation. You will be given the eval case (input message, category, expectedBehavior, watchFor, whether it's a known limitation) and what the agent actually did (its tool calls and final submitted items).
 
 Pick exactly one bucket:
-- "correct": behavior is defensible and matches expectedBehavior, even if not a perfect match to the example wording.
-- "wrong-tool": called a tool that doesn't fit the situation (e.g. fabricated a submit_reconciliation item for a creation-request or off-topic message that described no real activity).
-- "right-tool-wrong-args": called reasonable tools, but arguments are wrong (bad taskId/goalId match, wrong duration, wrong outcome).
-- "no-tool-called": failed to call a tool it needed to call — most commonly skipping get_recent_events, or never calling submit_reconciliation at all (hit max turns without finalizing).
-- "hallucinated-data": invented a taskId or goalId that was never returned by search_tasks/search_goals, or invented activity the user never described.
-- "incomplete": partially right but missing something — merged distinct activities into fewer items, wrong/missing effectiveDate, dropped an activity from a multi-activity report, or (for known-limitation duplicate cases) failed to note the overlap in its explanation.
+${FAILURE_BUCKETS.map((b) => `- "${b.id}": ${b.description}`).join("\n")}
 
 If knownLimitation is true, grade what actually happened but don't be harsher than the case's own expectedBehavior asks for — these are cases we already know the system can't fully solve.
 
@@ -90,7 +69,7 @@ async function gradeCase(
   model: string,
   evalCase: EvalCase,
   result: AgentRunResult
-): Promise<{ bucket: Bucket; reasoning: string }> {
+): Promise<{ bucket: FailureBucket; reasoning: string }> {
   const toolCalls = result.trace.filter(isToolCallStep).map((step) => ({ name: step.name, input: step.input }));
 
   const payload = {
@@ -116,7 +95,7 @@ async function gradeCase(
   if (!block || block.type !== "tool_use") {
     throw new Error("Grader did not return a tool_use block.");
   }
-  return block.input as { bucket: Bucket; reasoning: string };
+  return block.input as { bucket: FailureBucket; reasoning: string };
 }
 
 async function main() {

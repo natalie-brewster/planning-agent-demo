@@ -3,15 +3,17 @@
 import { useState } from "react";
 import type { AgentRunResult } from "@/lib/agent";
 import TraceView from "@/components/TraceView";
+import EvalTypesTab from "@/components/EvalTypesTab";
 import EvalDashboard from "@/components/EvalDashboard";
 import ToolsTab from "@/components/ToolsTab";
 import PromptsTab from "@/components/PromptsTab";
 
-const TABS = ["trace", "eval", "prompts", "tools"] as const;
+const TABS = ["trace", "evalTypes", "eval", "prompts", "tools"] as const;
 type Tab = (typeof TABS)[number];
 
 const TAB_LABELS: Record<Tab, string> = {
   trace: "Trace",
+  evalTypes: "Eval Taxonomy",
   eval: "Eval Dashboard",
   prompts: "Prompts",
   tools: "Tools",
@@ -109,6 +111,7 @@ export default function Home() {
         </div>
       )}
 
+      {tab === "evalTypes" && <EvalTypesTab />}
       {tab === "eval" && <EvalDashboard />}
       {tab === "prompts" && <PromptsTab />}
       {tab === "tools" && <ToolsTab />}
